@@ -43,7 +43,7 @@ func TestTable(t *testing.T) {
 		args    []string
 		fixture string
 	}{
-		{"small", []string{}, "expected-output/small.out"},
+		{"small", []string{}, "expected-output/small.txt"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
