@@ -39,11 +39,13 @@ func TestMain(m *testing.M) {
 }
 func TestTable(t *testing.T) {
 	tests := []struct {
-		name    string
-		args    []string
-		fixture string
+		name         string
+		args         []string
+		inputFile    string
+		expectedFile string
 	}{
-		{"small", []string{}, "expected-output/small.txt"},
+		{"regular", []string{}, "examples/imdb.csv", "expected-output/imdb.txt"},
+		{"messy", []string{}, "examples/imdb_messy.csv", "expected-output/imdb.txt"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -51,12 +53,13 @@ func TestTable(t *testing.T) {
 			in, _ := cmd.StdinPipe()
 			out, _ := cmd.StdoutPipe()
 			cmd.Start()
-			in.Write([]byte("name,age\nVegard,27"))
+			inputString := loadFixture(t, tt.inputFile)
+			in.Write([]byte(inputString))
 			in.Close()
 			output, _ := ioutil.ReadAll(out)
 			cmd.Wait()
 			actual := string(output)
-			expected := loadFixture(t, tt.fixture)
+			expected := loadFixture(t, tt.expectedFile)
 			if !reflect.DeepEqual(actual, expected) {
 				t.Fatalf("actual = %s, expected = %s", actual, expected)
 			}
