@@ -1,10 +1,8 @@
 # table
 
 <p align="center">
-    <!-- <img src="https://stuff.charm.sh/glow-github.gif" alt="Glow Logo"> -->
     <a href="https://github.com/vegarsti/table/releases"><img src="https://img.shields.io/github/release/vegarsti/table.svg" alt="Latest Release"></a>
-    <!-- <a href="https://pkg.go.dev/github.com/charmbracelet/glow?tab=doc"><img src="https://godoc.org/github.com/golang/gddo?status.svg" alt="GoDoc"></a> -->
-    <a href="https://github.com/vegarsti/table/actions"><img src="https://github.com/charmbracelet/glow/workflows/test/badge.svg" alt="Build Status"></a>
+    <a href="https://github.com/vegarsti/table/actions"><img src="https://github.com/vegarsti/table/workflows/build/badge.svg" alt="Build Status"></a>
     <a href="http://goreportcard.com/report/github.com/vegarsti/table"><img src="http://goreportcard.com/badge/vegarsti/table" alt="Go ReportCard"></a>
 </p>
 
