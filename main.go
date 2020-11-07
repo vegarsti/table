@@ -5,7 +5,6 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"text/tabwriter"
@@ -26,10 +25,14 @@ func write(f *os.File, records [][]string) {
 }
 
 func main() {
+	if len(os.Args) > 1 {
+		fmt.Fprintf(os.Stderr, "table: invalid argument(s): '%s'\n", strings.Join(os.Args[1:], " "))
+		os.Exit(1)
+	}
 	reader := csv.NewReader(os.Stdin)
 	records, err := reader.ReadAll()
 	if err != nil {
-		log.Fatalf("table: %s", err)
+		fmt.Fprintf(os.Stderr, "table: %s", err)
 	}
 	write(os.Stdout, records)
 }

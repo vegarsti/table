@@ -39,30 +39,40 @@ func TestMain(m *testing.M) {
 }
 func TestTable(t *testing.T) {
 	tests := []struct {
-		name         string
-		args         []string
-		inputFile    string
-		expectedFile string
+		name          string
+		args          []string
+		inputFile     string
+		expectedFile  string
+		expectedError string
 	}{
-		{"regular", []string{}, "examples/imdb.csv", "expected-output/imdb.txt"},
-		{"messy", []string{}, "examples/imdb_messy.csv", "expected-output/imdb.txt"},
-		{"tabs", []string{}, "examples/tabs.tsv", "expected-output/tabs.txt"},
+		{"regular", []string{}, "examples/imdb.csv", "expected-output/imdb.txt", ""},
+		{"messy", []string{}, "examples/imdb_messy.csv", "expected-output/imdb.txt", ""},
+		{"tabs", []string{}, "examples/tabs.tsv", "expected-output/tabs.txt", ""},
+		{"arg", []string{"lol"}, "examples/tabs.tsv", "expected-output/empty.txt", "table: invalid argument(s): 'lol'\n"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cmd := exec.Command("./table", tt.args...)
 			in, _ := cmd.StdinPipe()
 			out, _ := cmd.StdoutPipe()
+			errOut, _ := cmd.StderrPipe()
 			cmd.Start()
 			inputString := loadFixture(t, tt.inputFile)
 			in.Write([]byte(inputString))
 			in.Close()
 			output, _ := ioutil.ReadAll(out)
+			errorOutput, _ := ioutil.ReadAll(errOut)
 			cmd.Wait()
 			actual := string(output)
 			expected := loadFixture(t, tt.expectedFile)
 			if !reflect.DeepEqual(actual, expected) {
-				t.Fatalf("actual = %s, expected = %s", actual, expected)
+				t.Fatalf("actual stdout = %s, expected stdout = %s", actual, expected)
+			}
+			actualErr := string(errorOutput)
+			if !reflect.DeepEqual(actualErr, tt.expectedError) {
+				fmt.Println(len(actualErr))
+				fmt.Println(len(tt.expectedError))
+				t.Fatalf("actual stderr = %s, expected stderr = %s", actual, expected)
 			}
 		})
 	}
