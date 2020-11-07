@@ -46,6 +46,7 @@ func TestTable(t *testing.T) {
 	}{
 		{"regular", []string{}, "examples/imdb.csv", "expected-output/imdb.txt"},
 		{"messy", []string{}, "examples/imdb_messy.csv", "expected-output/imdb.txt"},
+		{"tabs", []string{"--delimiter", "\t"}, "examples/tabs.tsv", "expected-output/tabs.txt"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
