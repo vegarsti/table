@@ -50,7 +50,8 @@ func TestTable(t *testing.T) {
 		{"messy", []string{}, "examples/imdb_messy.csv", "expected-output/imdb.txt", ""},
 		{"tabs", []string{"--delimiter", `\t`}, "examples/tabs.tsv", "expected-output/tabs.txt", ""},
 		{"semicolon", []string{"--delimiter", ";"}, "examples/imdb_semicolon.csv", "expected-output/imdb.txt", ""},
-		{"arg", []string{"lol"}, "examples/tabs.tsv", "expected-output/empty.txt", "invalid argument(s)"},
+		{"invalid-argument", []string{"lol"}, "examples/tabs.tsv", "expected-output/empty.txt", "invalid argument(s)"},
+		{"invalid-formatting", []string{}, "examples/imdb_invalid.csv", "expected-output/empty.txt", "table: record on line 3: wrong number of fields"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

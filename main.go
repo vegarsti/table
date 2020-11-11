@@ -64,7 +64,7 @@ func main() {
 	reader.Comma = delimiterRune
 	records, err := reader.ReadAll()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "table: %s", err)
+		fmt.Fprintf(os.Stderr, "table: %v\n", err)
 	}
 	write(os.Stdout, records)
 }
