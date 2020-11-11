@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strings"
 	"testing"
 )
 
@@ -47,8 +48,9 @@ func TestTable(t *testing.T) {
 	}{
 		{"regular", []string{}, "examples/imdb.csv", "expected-output/imdb.txt", ""},
 		{"messy", []string{}, "examples/imdb_messy.csv", "expected-output/imdb.txt", ""},
-		{"tabs", []string{}, "examples/tabs.tsv", "expected-output/tabs.txt", ""},
-		{"arg", []string{"lol"}, "examples/tabs.tsv", "expected-output/empty.txt", "table: invalid argument(s): 'lol'\n"},
+		{"tabs", []string{"--delimiter", `\t`}, "examples/tabs.tsv", "expected-output/tabs.txt", ""},
+		{"semicolon", []string{"--delimiter", ";"}, "examples/imdb_semicolon.csv", "expected-output/imdb.txt", ""},
+		{"arg", []string{"lol"}, "examples/tabs.tsv", "expected-output/empty.txt", "invalid argument(s)"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -63,16 +65,14 @@ func TestTable(t *testing.T) {
 			output, _ := ioutil.ReadAll(out)
 			errorOutput, _ := ioutil.ReadAll(errOut)
 			cmd.Wait()
+			actualErr := string(errorOutput)
+			if !strings.Contains(actualErr, tt.expectedError) {
+				t.Fatalf("stderr did not contain expected string,\nactual stderr = %s, expected stderr = %s", actualErr, tt.expectedError)
+			}
 			actual := string(output)
 			expected := loadFixture(t, tt.expectedFile)
 			if !reflect.DeepEqual(actual, expected) {
 				t.Fatalf("actual stdout = %s, expected stdout = %s", actual, expected)
-			}
-			actualErr := string(errorOutput)
-			if !reflect.DeepEqual(actualErr, tt.expectedError) {
-				fmt.Println(len(actualErr))
-				fmt.Println(len(tt.expectedError))
-				t.Fatalf("actual stderr = %s, expected stderr = %s", actual, expected)
 			}
 		})
 	}
