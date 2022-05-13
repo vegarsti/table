@@ -6,6 +6,7 @@ import (
 	"encoding/csv"
 	goflag "flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 	"text/tabwriter"
@@ -40,11 +41,12 @@ func parseArgs() rune {
 	return delimiterRune
 }
 
-func write(f *os.File, records [][]string) {
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+// write records aligned by columns, using spaces as padding
+func write(f io.Writer, records [][]string) {
+	w := tabwriter.NewWriter(f, 0, 0, 2, ' ', 0)
 	for _, record := range records {
 		for j, cell := range record {
-			fmt.Fprintf(w, strings.TrimSpace(cell))
+			fmt.Fprint(w, strings.TrimSpace(cell))
 			if j < len(cell)-1 {
 				fmt.Fprintf(w, "\t")
 			}
@@ -65,6 +67,7 @@ func main() {
 	records, err := reader.ReadAll()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "table: %v\n", err)
+		os.Exit(1)
 	}
 	write(os.Stdout, records)
 }
